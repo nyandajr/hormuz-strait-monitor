@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-07-04T22:00:01.751945+00:00",
+  "last_ais_message_at": null,
+  "closure_start": "2026-02-28",
+  "days_in_closure": 126,
+  "vessels_underway_24h": 0,
+  "baseline_daily_transits": 90,
+  "dwt_throughput_pct": 0.0,
+  "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
+}
