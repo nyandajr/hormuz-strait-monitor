@@ -74,7 +74,10 @@ def run():
     while True:
         try:
             print(f"[ingest] connecting to {WS_URL}")
-            ws = websocket.create_connection(WS_URL, timeout=30)
+            # generous timeout: current transit volume through the strait is
+            # ~27 vessels/day (vs ~90 normal), so gaps between AIS reports in
+            # this geofence regularly exceed 30s -- that's not a dead connection
+            ws = websocket.create_connection(WS_URL, timeout=180)
             ws.send(json.dumps({
                 "APIKey": API_KEY,
                 "BoundingBoxes": BOUNDING_BOX,
