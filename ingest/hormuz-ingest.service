@@ -8,7 +8,8 @@ Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/hormuz-strait-monitor
 EnvironmentFile=/home/ubuntu/hormuz-strait-monitor/.env
-ExecStart=/home/ubuntu/hormuz-strait-monitor/venv/bin/python ingest/ingest_worker.py
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/ubuntu/hormuz-strait-monitor/venv/bin/python -u ingest/ingest_worker.py
 Restart=always
 RestartSec=5
 StandardOutput=journal
