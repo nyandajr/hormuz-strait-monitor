@@ -1,0 +1,18 @@
+[Unit]
+Description=Hormuz Strait AIS Ingestion Worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/hormuz-strait-monitor
+EnvironmentFile=/home/ubuntu/hormuz-strait-monitor/.env
+ExecStart=/home/ubuntu/hormuz-strait-monitor/venv/bin/python ingest/ingest_worker.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strait of Hormuz Monitor</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #21262d;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --accent: #f85149;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f8fa;
+      --card: #ffffff;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #57606a;
+      --accent: #cf222e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 16px;
+  }
+  main { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); margin-bottom: 32px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .card .label { color: var(--muted); font-size: 0.85rem; margin-bottom: 8px; }
+  .card .value { font-size: 1.8rem; font-weight: 600; }
+  .card .value.accent { color: var(--accent); }
+  footer { margin-top: 32px; color: var(--muted); font-size: 0.8rem; }
+  #error { display: none; color: var(--accent); margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Strait of Hormuz Transit &amp; Closure Monitor</h1>
+  <p class="subtitle">Live AIS-derived vessel throughput, updated from a continuous ingestion feed</p>
+
+  <div class="grid" id="grid">
+    <div class="card">
+      <div class="label">Days in Closure</div>
+      <div class="value accent" id="days">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Vessels Underway (24h)</div>
+      <div class="value" id="vessels">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Baseline (normal)</div>
+      <div class="value" id="baseline">—</div>
+    </div>
+    <div class="card">
+      <div class="label">Transit Throughput</div>
+      <div class="value" id="throughput">—</div>
+    </div>
+  </div>
+
+  <p id="error">Couldn't load data.json yet — the pipeline may not have run for the first time.</p>
+
+  <footer>
+    Last snapshot: <span id="updated">—</span><br>
+    Last AIS message received: <span id="last-ais">—</span>
+  </footer>
+</main>
+
+<script>
+fetch('data.json')
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('days').textContent = d.days_in_closure;
+    document.getElementById('vessels').textContent = d.vessels_underway_24h;
+    document.getElementById('baseline').textContent = d.baseline_daily_transits + '/day';
+    document.getElementById('throughput').textContent = d.dwt_throughput_pct + '%';
+    document.getElementById('updated').textContent = new Date(d.generated_at).toLocaleString();
+    document.getElementById('last-ais').textContent = d.last_ais_message_at
+      ? new Date(d.last_ais_message_at).toLocaleString()
+      : 'none yet';
+  })
+  .catch(() => {
+    document.getElementById('error').style.display = 'block';
+  });
+</script>
+</body>
+</html>
