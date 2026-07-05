@@ -75,6 +75,11 @@
       <div class="label">Transit Throughput</div>
       <div class="value" id="throughput">—</div>
     </div>
+    <div class="card">
+      <div class="label">Brent Crude</div>
+      <div class="value" id="brent">—</div>
+      <div class="label" id="brent-asof" style="margin-top:8px;margin-bottom:0"></div>
+    </div>
   </div>
 
   <p id="error">Couldn't load data.json yet — the pipeline may not have run for the first time.</p>
@@ -97,6 +102,13 @@ fetch('data.json')
     document.getElementById('last-ais').textContent = d.last_ais_message_at
       ? new Date(d.last_ais_message_at).toLocaleString()
       : 'none yet';
+
+    if (d.brent_crude) {
+      document.getElementById('brent').textContent = '$' + d.brent_crude.price_usd.toFixed(2);
+      document.getElementById('brent-asof').textContent = 'as of ' + d.brent_crude.as_of_date;
+    } else {
+      document.getElementById('brent').textContent = 'n/a';
+    }
   })
   .catch(() => {
     document.getElementById('error').style.display = 'block';

@@ -4,6 +4,7 @@ crontab every 15-30 min -- NOT from GitHub Actions.
 """
 
 import csv
+import io
 import json
 import os
 import sqlite3
@@ -11,12 +12,41 @@ import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import requests
+
 DB_PATH = os.environ.get("HORMUZ_DB_PATH", "hormuz.db")
 REPO_DIR = Path(os.environ.get("HORMUZ_REPO_DIR", "."))
 
 CLOSURE_START = datetime(2026, 2, 28, tzinfo=timezone.utc)
 BASELINE_DAILY_TRANSITS = 90
 WINDOW_HOURS = 24
+
+CRUDE_CSV_URL = "https://raw.githubusercontent.com/nyandajr/global-fuel-watch/main/data/live/crude.csv"
+
+
+def latest_crude_price(commodity="brent"):
+    """Reads global-fuel-watch's own published CSV directly -- no separate
+    Alpha Vantage key needed here, and no duplicate fetch logic to maintain.
+    """
+    try:
+        resp = requests.get(CRUDE_CSV_URL, timeout=15)
+        resp.raise_for_status()
+        rows = list(csv.DictReader(io.StringIO(resp.text)))
+    except Exception as e:
+        print(f"[aggregate] crude price fetch failed: {e}")
+        return None
+
+    matching = [r for r in rows if r.get("commodity") == commodity]
+    if not matching:
+        return None
+
+    latest = matching[-1]
+    return {
+        "commodity": commodity,
+        "price_usd": float(latest["price_usd"]),
+        "as_of_date": latest["date"],
+        "fetched_at": latest["timestamp"],
+    }
 
 
 def latest_snapshot():
@@ -36,7 +66,7 @@ def latest_snapshot():
     return vessels, last_seen
 
 
-def build_payload(vessels_underway, last_seen):
+def build_payload(vessels_underway, last_seen, brent):
     now = datetime.now(timezone.utc)
     days_in_closure = (now - CLOSURE_START).days
     throughput_pct = round((vessels_underway / BASELINE_DAILY_TRANSITS) * 100, 1) if vessels_underway else 0.0
@@ -49,6 +79,7 @@ def build_payload(vessels_underway, last_seen):
         "vessels_underway_24h": vessels_underway,
         "baseline_daily_transits": BASELINE_DAILY_TRANSITS,
         "dwt_throughput_pct": throughput_pct,
+        "brent_crude": brent,
         # vessel count is a same-day proxy for DWT throughput, not a real
         # tonnage calculation -- AIS position reports don't carry cargo data
         "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage",
@@ -60,13 +91,19 @@ def append_history(payload):
     history_path.parent.mkdir(parents=True, exist_ok=True)
     is_new = not history_path.exists()
 
+    row = {
+        "generated_at": payload["generated_at"],
+        "days_in_closure": payload["days_in_closure"],
+        "vessels_underway_24h": payload["vessels_underway_24h"],
+        "dwt_throughput_pct": payload["dwt_throughput_pct"],
+        "brent_price_usd": payload["brent_crude"]["price_usd"] if payload["brent_crude"] else "",
+    }
+
     with open(history_path, "a", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=[
-            "generated_at", "days_in_closure", "vessels_underway_24h", "dwt_throughput_pct",
-        ])
+        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
         if is_new:
             writer.writeheader()
-        writer.writerow({k: payload[k] for k in writer.fieldnames})
+        writer.writerow(row)
 
 
 def write_dashboard_json(payload):
@@ -96,7 +133,8 @@ def git_commit_and_push():
 
 def main():
     vessels, last_seen = latest_snapshot()
-    payload = build_payload(vessels, last_seen)
+    brent = latest_crude_price("brent")
+    payload = build_payload(vessels, last_seen, brent)
     append_history(payload)
     write_dashboard_json(payload)
     git_commit_and_push()
