@@ -113,9 +113,19 @@ def write_dashboard_json(payload):
 
 
 def git_commit_and_push():
-    subprocess.run(["git", "-C", str(REPO_DIR), "config", "user.name", "hormuz-bot"], check=True)
-    subprocess.run(["git", "-C", str(REPO_DIR), "config", "user.email", "hormuz-bot@users.noreply.github.com"], check=True)
-    subprocess.run(["git", "-C", str(REPO_DIR), "add", "data/history.csv", "docs/data.json"], check=True)
+    def run(*args):
+        subprocess.run(["git", "-C", str(REPO_DIR), *args], check=True)
+
+    run("config", "user.name", "hormuz-bot")
+    run("config", "user.email", "hormuz-bot@users.noreply.github.com")
+
+    # fetch + reset --soft (not pull --rebase): docs/data.json is fully
+    # rewritten every run, not appended to, so a rebase can genuinely
+    # conflict with itself run-over-run. There's nothing worth merging
+    # between two generated snapshots -- the newest one should just win.
+    run("fetch", "origin", "main")
+    run("reset", "--soft", "origin/main")
+    run("add", "data/history.csv", "docs/data.json")
 
     diff = subprocess.run(["git", "-C", str(REPO_DIR), "diff", "--cached", "--quiet"])
     if diff.returncode == 0:
@@ -123,12 +133,8 @@ def git_commit_and_push():
         return
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
-    subprocess.run(["git", "-C", str(REPO_DIR), "commit", "-m", f"data: hormuz snapshot {timestamp}"], check=True)
-
-    push = subprocess.run(["git", "-C", str(REPO_DIR), "push"])
-    if push.returncode != 0:
-        subprocess.run(["git", "-C", str(REPO_DIR), "pull", "--rebase", "origin", "main"], check=True)
-        subprocess.run(["git", "-C", str(REPO_DIR), "push"], check=True)
+    run("commit", "-m", f"data: hormuz snapshot {timestamp}")
+    run("push", "--force", "origin", "HEAD:main")
 
 
 def main():
