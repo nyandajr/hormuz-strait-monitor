@@ -20,6 +20,7 @@ REPO_DIR = Path(os.environ.get("HORMUZ_REPO_DIR", "."))
 CLOSURE_START = datetime(2026, 2, 28, tzinfo=timezone.utc)
 BASELINE_DAILY_TRANSITS = 90
 WINDOW_HOURS = 24
+REGION_NAMES = ["hormuz", "singapore"]
 
 CRUDE_CSV_URL = "https://raw.githubusercontent.com/nyandajr/global-fuel-watch/main/data/live/crude.csv"
 
@@ -53,33 +54,44 @@ def latest_snapshot():
     conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=WINDOW_HOURS)).isoformat()
 
-    vessels = conn.execute(
-        "SELECT COUNT(DISTINCT mmsi) FROM ais_messages WHERE received_at > ? AND mmsi IS NOT NULL",
-        (cutoff,),
-    ).fetchone()[0]
-
-    last_seen = conn.execute(
-        "SELECT MAX(received_at) FROM ais_messages"
-    ).fetchone()[0]
+    regions = {}
+    for name in REGION_NAMES:
+        vessels = conn.execute(
+            """SELECT COUNT(DISTINCT mmsi) FROM ais_messages
+               WHERE region = ? AND received_at > ? AND mmsi IS NOT NULL""",
+            (name, cutoff),
+        ).fetchone()[0]
+        last_seen = conn.execute(
+            "SELECT MAX(received_at) FROM ais_messages WHERE region = ?",
+            (name,),
+        ).fetchone()[0]
+        regions[name] = {"vessels_underway_24h": vessels, "last_ais_message_at": last_seen}
 
     conn.close()
-    return vessels, last_seen
+    return regions
 
 
-def build_payload(vessels_underway, last_seen, brent):
+def build_payload(regions, brent):
     now = datetime.now(timezone.utc)
     days_in_closure = (now - CLOSURE_START).days
-    throughput_pct = round((vessels_underway / BASELINE_DAILY_TRANSITS) * 100, 1) if vessels_underway else 0.0
+
+    hormuz = regions.get("hormuz", {"vessels_underway_24h": 0, "last_ais_message_at": None})
+    hormuz_vessels = hormuz["vessels_underway_24h"]
+    throughput_pct = round((hormuz_vessels / BASELINE_DAILY_TRANSITS) * 100, 1) if hormuz_vessels else 0.0
 
     return {
         "generated_at": now.isoformat(),
-        "last_ais_message_at": last_seen,
+        "last_ais_message_at": hormuz["last_ais_message_at"],
         "closure_start": CLOSURE_START.date().isoformat(),
         "days_in_closure": days_in_closure,
-        "vessels_underway_24h": vessels_underway,
+        "vessels_underway_24h": hormuz_vessels,
         "baseline_daily_transits": BASELINE_DAILY_TRANSITS,
         "dwt_throughput_pct": throughput_pct,
         "brent_crude": brent,
+        # per-strait comparison table -- hormuz is the only one with
+        # closure-specific framing (baseline/throughput/days), since it's
+        # the only strait actually in crisis; the others are just raw counts
+        "straits": regions,
         # vessel count is a same-day proxy for DWT throughput, not a real
         # tonnage calculation -- AIS position reports don't carry cargo data
         "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage",
@@ -138,9 +150,9 @@ def git_commit_and_push():
 
 
 def main():
-    vessels, last_seen = latest_snapshot()
+    regions = latest_snapshot()
     brent = latest_crude_price("brent")
-    payload = build_payload(vessels, last_seen, brent)
+    payload = build_payload(regions, brent)
     append_history(payload)
     write_dashboard_json(payload)
     git_commit_and_push()
