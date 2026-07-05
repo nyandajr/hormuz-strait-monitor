@@ -124,19 +124,26 @@ def write_dashboard_json(payload):
     docs_path.write_text(json.dumps(payload, indent=2))
 
 
+def sync_with_remote():
+    """Must run BEFORE any data files are (re)generated, and must be --hard,
+    not --soft. A previous --soft version left stale index entries for any
+    file this script doesn't explicitly `git add` (e.g. README.md, source
+    files edited from another machine) -- reset --soft only moves HEAD, it
+    doesn't touch the index or working tree, so those stale entries got
+    silently recommitted and force-pushed on top of real upstream changes,
+    clobbering them. --hard fully syncs index + working tree to origin/main
+    first, so nothing stale can leak into the next commit.
+    """
+    subprocess.run(["git", "-C", str(REPO_DIR), "fetch", "origin", "main"], check=True)
+    subprocess.run(["git", "-C", str(REPO_DIR), "reset", "--hard", "origin/main"], check=True)
+
+
 def git_commit_and_push():
     def run(*args):
         subprocess.run(["git", "-C", str(REPO_DIR), *args], check=True)
 
     run("config", "user.name", "hormuz-bot")
     run("config", "user.email", "hormuz-bot@users.noreply.github.com")
-
-    # fetch + reset --soft (not pull --rebase): docs/data.json is fully
-    # rewritten every run, not appended to, so a rebase can genuinely
-    # conflict with itself run-over-run. There's nothing worth merging
-    # between two generated snapshots -- the newest one should just win.
-    run("fetch", "origin", "main")
-    run("reset", "--soft", "origin/main")
     run("add", "data/history.csv", "docs/data.json")
 
     diff = subprocess.run(["git", "-C", str(REPO_DIR), "diff", "--cached", "--quiet"])
@@ -150,6 +157,7 @@ def git_commit_and_push():
 
 
 def main():
+    sync_with_remote()
     regions = latest_snapshot()
     brent = latest_crude_price("brent")
     payload = build_payload(regions, brent)
