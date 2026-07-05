@@ -1,10 +1,16 @@
 {
-  "generated_at": "2026-07-05T20:00:01.950438+00:00",
+  "generated_at": "2026-07-05T20:15:13.703088+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
   "days_in_closure": 127,
   "vessels_underway_24h": 0,
   "baseline_daily_transits": 90,
   "dwt_throughput_pct": 0.0,
+  "brent_crude": {
+    "commodity": "brent",
+    "price_usd": 71.59,
+    "as_of_date": "2026-06-29",
+    "fetched_at": "2026-07-05 19:39:44"
+  },
   "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
 }
