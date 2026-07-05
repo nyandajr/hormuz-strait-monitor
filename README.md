@@ -91,10 +91,3 @@ Repo Settings → Pages → Source: `main` branch, `/docs` folder.
   won't be counted. Worth a caveat on the dashboard itself.
 - Baseline of 90 transits/day is a fixed constant from pre-crisis reporting,
   not pulled from a live source — revisit if better sourcing turns up.
-- **Confirmed 2026-07-06**: `vessels_underway_24h` sat at 0 for the first
-  ~24h of ingestion. Verified this isn't a code bug — `ingest/debug_busy_lane.py`
-  pointed at the Singapore Strait picked up 33 vessels in 90 seconds using
-  the identical subscription code. The Hormuz silence is real: either
-  vessels are running dark (AIS off) for safety in the conflict zone, or
-  AISStream's receiver coverage has a gap in that specific area right now.
-  Zero is a genuine data point here, not a broken pipeline.
