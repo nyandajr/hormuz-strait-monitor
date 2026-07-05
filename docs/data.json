@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-05T20:45:01.970203+00:00",
+  "generated_at": "2026-07-05T21:00:02.617113+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
   "days_in_closure": 127,
@@ -11,6 +11,16 @@
     "price_usd": 71.59,
     "as_of_date": "2026-06-29",
     "fetched_at": "2026-07-05 20:41:34"
+  },
+  "straits": {
+    "hormuz": {
+      "vessels_underway_24h": 0,
+      "last_ais_message_at": null
+    },
+    "singapore": {
+      "vessels_underway_24h": 29,
+      "last_ais_message_at": "2026-07-05T20:59:53.432848+00:00"
+    }
   },
   "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
 }
