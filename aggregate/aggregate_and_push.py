@@ -142,8 +142,11 @@ def git_commit_and_push():
     def run(*args):
         subprocess.run(["git", "-C", str(REPO_DIR), *args], check=True)
 
-    run("config", "user.name", "hormuz-bot")
-    run("config", "user.email", "hormuz-bot@users.noreply.github.com")
+    # freddynyanda@proton.me is Fred's real, verified GitHub email --
+    # a synthetic bot email here would push real commits that silently
+    # never count toward his contribution graph
+    run("config", "user.name", "nyandajr")
+    run("config", "user.email", "freddynyanda@proton.me")
     run("add", "data/history.csv", "docs/data.json")
 
     diff = subprocess.run(["git", "-C", str(REPO_DIR), "diff", "--cached", "--quiet"])
