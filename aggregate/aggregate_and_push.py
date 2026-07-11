@@ -138,7 +138,20 @@ def sync_with_remote():
     subprocess.run(["git", "-C", str(REPO_DIR), "reset", "--hard", "origin/main"], check=True)
 
 
-def git_commit_and_push():
+def build_commit_message(payload):
+    hormuz_v = payload["vessels_underway_24h"]
+    singapore = payload["straits"].get("singapore", {})
+    singapore_v = singapore.get("vessels_underway_24h", 0)
+
+    parts = [f"Hormuz: {hormuz_v} vessels (day {payload['days_in_closure']}, {payload['dwt_throughput_pct']}% throughput)"]
+    parts.append(f"Singapore: {singapore_v} vessels")
+    if payload["brent_crude"]:
+        parts.append(f"Brent ${payload['brent_crude']['price_usd']:.2f}")
+
+    return "data: hormuz update — " + " | ".join(parts)
+
+
+def git_commit_and_push(payload):
     def run(*args):
         subprocess.run(["git", "-C", str(REPO_DIR), *args], check=True)
 
@@ -154,8 +167,7 @@ def git_commit_and_push():
         print("[aggregate] no changes to commit")
         return
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
-    run("commit", "-m", f"data: hormuz snapshot {timestamp}")
+    run("commit", "-m", build_commit_message(payload))
     run("push", "--force", "origin", "HEAD:main")
 
 
@@ -166,7 +178,7 @@ def main():
     payload = build_payload(regions, brent)
     append_history(payload)
     write_dashboard_json(payload)
-    git_commit_and_push()
+    git_commit_and_push(payload)
     print(f"[aggregate] snapshot pushed: {payload}")
 
 
