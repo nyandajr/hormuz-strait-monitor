@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-20T20:00:10.380685+00:00",
+  "generated_at": "2026-07-20T20:15:12.990454+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
   "days_in_closure": 142,
@@ -10,7 +10,7 @@
     "commodity": "brent",
     "price_usd": 81.62,
     "as_of_date": "2026-07-13",
-    "fetched_at": "2026-07-20 16:07:04"
+    "fetched_at": "2026-07-20 20:07:03"
   },
   "straits": {
     "hormuz": {
@@ -18,7 +18,7 @@
       "last_ais_message_at": null
     },
     "singapore": {
-      "vessels_underway_24h": 345,
+      "vessels_underway_24h": 336,
       "last_ais_message_at": "2026-07-20T00:03:37.685802+00:00"
     }
   },
