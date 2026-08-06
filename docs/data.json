@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-05T23:45:48.222201+00:00",
+  "generated_at": "2026-08-06T00:00:30.301249+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
-  "days_in_closure": 158,
+  "days_in_closure": 159,
   "vessels_underway_24h": 0,
   "baseline_daily_transits": 90,
   "dwt_throughput_pct": 0.0,
@@ -18,7 +18,7 @@
       "last_ais_message_at": null
     },
     "singapore": {
-      "vessels_underway_24h": 705,
+      "vessels_underway_24h": 700,
       "last_ais_message_at": "2026-08-05T13:31:30.282978+00:00"
     }
   },
