@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-10T20:45:30.520338+00:00",
+  "generated_at": "2026-08-10T21:00:29.698896+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
   "days_in_closure": 163,
@@ -10,7 +10,7 @@
     "commodity": "brent",
     "price_usd": 88.9,
     "as_of_date": "2026-08-03",
-    "fetched_at": "2026-08-10 16:52:03"
+    "fetched_at": "2026-08-10 20:52:03"
   },
   "straits": {
     "hormuz": {
