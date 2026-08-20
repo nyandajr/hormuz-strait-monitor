@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T03:15:31.918020+00:00",
+  "generated_at": "2026-08-20T03:30:32.374121+00:00",
   "last_ais_message_at": null,
   "closure_start": "2026-02-28",
   "days_in_closure": 173,
@@ -18,7 +18,7 @@
       "last_ais_message_at": null
     },
     "singapore": {
-      "vessels_underway_24h": 341,
+      "vessels_underway_24h": 331,
       "last_ais_message_at": "2026-08-19T06:18:28.836015+00:00"
     }
   },
