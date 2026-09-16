@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T11:16:05.565198+00:00",
+  "generated_at": "2026-09-16T11:31:06.013757+00:00",
   "last_ais_message_at": "2026-08-30T08:36:09.485613+00:00",
   "closure_start": "2026-02-28",
   "days_in_closure": 200,
@@ -19,7 +19,7 @@
     },
     "singapore": {
       "vessels_underway_24h": 837,
-      "last_ais_message_at": "2026-09-16T11:15:31.968782+00:00"
+      "last_ais_message_at": "2026-09-16T11:30:32.613929+00:00"
     }
   },
   "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
