@@ -168,7 +168,13 @@ def git_commit_and_push(payload):
         return
 
     run("commit", "-m", build_commit_message(payload))
-    run("push", "--force", "origin", "HEAD:main")
+    # No --force: sync_with_remote() already reset --hard to origin/main
+    # before this commit, so this is always a fast-forward. GitHub's
+    # contribution graph is fed by a separate PushEvent pipeline that
+    # silently drops commits behind a force-pushed ref -- confirmed this
+    # was undercounting real commits portfolio-wide by up to 80%+ before
+    # it was removed from global-crypto-sentiment's push (same pattern).
+    run("push", "origin", "HEAD:main")
 
 
 def main():
