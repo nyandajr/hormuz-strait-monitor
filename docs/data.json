@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-12T20:31:48.867184+00:00",
-  "last_ais_message_at": "2026-10-12T20:27:42.442799+00:00",
+  "generated_at": "2026-10-12T20:46:49.881503+00:00",
+  "last_ais_message_at": "2026-10-12T20:43:42.801527+00:00",
   "closure_start": "2026-02-28",
   "days_in_closure": 226,
   "vessels_underway_24h": 145,
@@ -15,11 +15,11 @@
   "straits": {
     "hormuz": {
       "vessels_underway_24h": 145,
-      "last_ais_message_at": "2026-10-12T20:27:42.442799+00:00"
+      "last_ais_message_at": "2026-10-12T20:43:42.801527+00:00"
     },
     "singapore": {
-      "vessels_underway_24h": 980,
-      "last_ais_message_at": "2026-10-12T20:30:55.383852+00:00"
+      "vessels_underway_24h": 982,
+      "last_ais_message_at": "2026-10-12T20:45:38.251811+00:00"
     }
   },
   "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
