@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-20T06:16:56.893758+00:00",
-  "last_ais_message_at": "2026-10-20T05:09:30.253324+00:00",
+  "generated_at": "2026-10-20T06:31:56.540361+00:00",
+  "last_ais_message_at": "2026-10-20T06:22:41.627196+00:00",
   "closure_start": "2026-02-28",
   "days_in_closure": 234,
-  "vessels_underway_24h": 123,
+  "vessels_underway_24h": 99,
   "baseline_daily_transits": 90,
-  "dwt_throughput_pct": 136.7,
+  "dwt_throughput_pct": 110.0,
   "brent_crude": {
     "commodity": "brent",
     "price_usd": 126.55,
@@ -14,12 +14,12 @@
   },
   "straits": {
     "hormuz": {
-      "vessels_underway_24h": 123,
-      "last_ais_message_at": "2026-10-20T05:09:30.253324+00:00"
+      "vessels_underway_24h": 99,
+      "last_ais_message_at": "2026-10-20T06:22:41.627196+00:00"
     },
     "singapore": {
-      "vessels_underway_24h": 721,
-      "last_ais_message_at": "2026-10-20T06:15:59.506933+00:00"
+      "vessels_underway_24h": 722,
+      "last_ais_message_at": "2026-10-20T06:30:55.330997+00:00"
     }
   },
   "note": "dwt_throughput_pct is an AIS-transit-count proxy, not measured tonnage"
