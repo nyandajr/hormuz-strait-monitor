@@ -1,17 +1,12 @@
 {
-  "generated_at": "2026-11-01T17:03:00.068846+00:00",
+  "generated_at": "2026-11-01T17:03:45.558159+00:00",
   "last_ais_message_at": "2026-10-23T03:25:22.122385+00:00",
   "closure_start": "2026-02-28",
   "days_in_closure": 246,
   "vessels_underway_24h": 0,
   "baseline_daily_transits": 90,
   "dwt_throughput_pct": 0.0,
-  "brent_crude": {
-    "commodity": "brent",
-    "price_usd": 123.1,
-    "as_of_date": "2026-10-27",
-    "fetched_at": "2026-11-01 00:52:03"
-  },
+  "brent_crude": null,
   "straits": {
     "hormuz": {
       "vessels_underway_24h": 0,
