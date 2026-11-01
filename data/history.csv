@@ -10937,3 +10937,6 @@ generated_at,days_in_closure,vessels_underway_24h,dwt_throughput_pct
 2026-11-01T14:43:17.275946+00:00,246,0,0.0,
 2026-11-01T15:58:29.455401+00:00,246,0,0.0,
 2026-11-01T16:31:44.964139+00:00,246,0,0.0,
+generated_at,days_in_closure,vessels_underway_24h,dwt_throughput_pct,brent_price_usd
+2026-11-01T16:36:21.363121+00:00,246,0,0.0,
+2026-11-01T16:36:36.954981+00:00,246,0,0.0,
